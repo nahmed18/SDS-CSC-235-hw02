@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html> 
+<head>
+    <title>NYC Crashes Data Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="index.js"></script>
+</head>
+<body>
+    <div class="conthead">
+        <h1 id="title">NYC Motor Vehicle Collisions Exploratory Data Analysis</h1>
+    </div>
+
+    <div id="intro"> 
+        <h2>Brief Overview</h2>
+        <p>The dataset that will be used for the analysis is from the NYC Open Data site. 
+            This <a href="https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95/about_data">dataset</a> was provided by the New York Police Department (NYPD) and contains records of all police reported motor vehicle collisions in New York City. 
+            Each row in the dataset represents one collision event with attributes such as date and time, location, numbers of people injured or killed, contributing 
+            factors, vehicle types, and a unique collision ID. The data was filtered to recent years from 2023 to 2026 and then analyzed.     
+        </p>
+        <h3 id="poten-bias">Potential Biases</h3>
+        <p>It is important to keep in mind that this data has been collected by the police department. Thus, there are many incomplete and missing fields in the 
+            dataset due to how officers filled out the report. In addition these police reports are only filed if there is a collision involving injury, death, or damages over $1,000. Thus, minor collisions 
+            are not reported as often and this dataset does not account for population density, demographic factors, and traffic. 
+        </p>
+
+    </div>
+
+    <div id="variable-analysis" onmouseover="mouseOver()" onmouseout="mouseOut()">
+        <h2 class = "down-header">Variable Analysis</h2>
+        <p>To begin, six variables in the dataset were analyzed:</p> 
+        <ul>
+            <li class = "var-descrip">Number of Persons Killed (number.of.persons.killed) - this variable contains the number of people who have died from a collision. Here we can see that most collisions do not result in deaths. 
+                <table>
+                    <thead>
+                        <tr>
+                        <th>Min</th>
+                        <th>1st Qu.</th>
+                        <th>Median</th>
+                        <th>Mean</th>
+                        <th>3rd Qu.</th>
+                        <th>Max</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>0.000000</td>
+                        <td>0.000000</td>
+                        <td>0.000000</td>
+                        <td>0.002801</td>
+                        <td>0.000000</td>
+                        <td>5.000000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </li>
+            <li class = "var-descrip">Number of Persons Injured (number.of.persons.injured) - This variable contains the number of people who have been injured from a collision. Here we can see that most collisions also do not result in injury.
+                <table>
+                    <thead>
+                        <tr>
+                        <th>Min</th>
+                        <th>1st Qu.</th>
+                        <th>Median</th>
+                        <th>Mean</th>
+                        <th>3rd Qu.</th>
+                        <th>Max</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                        <td>0.0000</td>
+                        <td>0.5764</td>
+                        <td>1.0000</td>
+                        <td>34.0000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </li>
+            <li class = "var-descrip">Month (month) - This variable contains the total number of collisions per month
+                <table>
+                    <thead>
+                        <tr>
+                        <th>January</th>
+                        <th>February</th>
+                        <th>March</th>
+                        <th>April</th>
+                        <th>May</th>
+                        <th>June</th>
+                        <th>July</th>
+                        <th>August</th>
+                        <th>September</th>
+                        <th>October</th>
+                        <th>November</th>
+                        <th>December</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>25843</td>
+                        <td>20728</td>
+                        <td>23071</td>
+                        <td>21851</td>
+                        <td>24823</td>
+                        <td>23641</td>
+                        <td>23145</td>
+                        <td>22640</td>
+                        <td>23671</td>
+                        <td>24044</td>
+                        <td>22369</td>
+                        <td>22970</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </li>
+            <li class = "var-descrip">Time of day (time_of_day) - This variable contains the total number of collisions for each time of day. Here we can see the most collisions are in the afternoon and much less at night. 
+                <table>
+                    <thead>
+                        <tr>
+                        <th>Night</th>
+                        <th>Morning</th>
+                        <th>Afternoon</th>
+                        <th>Evening</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>40875</td>
+                        <td>71065</td>
+                        <td>94218</td>
+                        <td>72638</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </li>
+            <li class = "var-descrip">Borough (borough) - This variable contains the total number of collisions in each borough. Here we can see there are a lot of collisions where the borough was not reported followed by Brooklyn.
+                <table>
+                    <thead>
+                        <tr>
+                        <th>Bronx</th>
+                        <th>Brooklyn</th>
+                        <th>Manhattan</th>
+                        <th>Queens</th>
+                        <th>Staten Island</th>
+                        <th>NA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>31537</td>
+                        <td>71622</td>
+                        <td>37715</td>
+                        <td>54637</td>
+                        <td>8397</td>
+                        <td>74888</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </li>
+            <li class = "var-descrip">Contributing Factor (contributing.factor.vehicle.1) - This variable contains the reason for the collision from the first vehicle. Here we can see driver inattention is the highest reason for collision after unspecified.
+                <table>
+                    <tbody class="big-table">
+
+                        <tr>
+                        <th>Unspecified</th>
+                        <th>Driver Inattention/Distraction</th>
+                        <th>Failure to Yield Right-of-Way</th>
+                        <th>Following Too Closely</th>
+                        <th>Passing or Lane Usage Improper</th>
+                        <th>Unsafe Speed</th>
+                        <th>Other Vehicular</th>
+                        <th>Passing Too Closely</th>
+                        </tr>
+                        <tr>
+                        <td>69256</td>
+                        <td>68327</td>
+                        <td>18940</td>
+                        <td>16479</td>
+                        <td>11561</td>
+                        <td>10161</td>
+                        <td>9200</td>
+                        <td>9104</td>
+                        </tr>
+
+                        <tr>
+                        <th>Backing Unsafely</th>
+                        <th>Traffic Control Disregarded</th>
+                        <th>Turning Improperly</th>
+                        <th>Driver Inexperience</th>
+                        <th>Unsafe Lane Changing</th>
+                        <th>Alcohol Involvement</th>
+                        <th>Pedestrian/Bicyclist/Other Pedestrian Error/Confusion</th>
+                        <th>Reaction to Uninvolved Vehicle</th>
+                        </tr>
+                        <tr>
+                        <td>8377</td>
+                        <td>7754</td>
+                        <td>6473</td>
+                        <td>6177</td>
+                        <td>5631</td>
+                        <td>5273</td>
+                        <td>3278</td>
+                        <td>3056</td>
+                        </tr>
+
+                        <tr>
+                        <th>View Obstructed/Limited</th>
+                        <th>Aggressive Driving/Road Rage</th>
+                        <th>Pavement Slippery</th>
+                        <th>Fell Asleep</th>
+                        <th>Oversized Vehicle</th>
+                        <th>Brakes Defective</th>
+                        <th>Passenger Distraction</th>
+                        <th>Outside Car Distraction</th>
+                        </tr>
+                        <tr>
+                        <td>2667</td>
+                        <td>2478</td>
+                        <td>2047</td>
+                        <td>1202</td>
+                        <td>1075</td>
+                        <td>1016</td>
+                        <td>818</td>
+                        <td>645</td>
+                        </tr>
+
+                        <tr>
+                        <th>Steering Failure</th>
+                        <th>Obstruction/Debris</th>
+                        <th>Lost Consciousness</th>
+                        <th>Illnes</th>
+                        <th>Glare</th>
+                        <th>Tire Failure/Inadequate</th>
+                        <th>Driverless/Runaway Vehicle</th>
+                        <th>Failure to Keep Right</th>
+                        </tr>
+                        <tr>
+                        <td>602</td>
+                        <td>595</td>
+                        <td>594</td>
+                        <td>495</td>
+                        <td>446</td>
+                        <td>437</td>
+                        <td>301</td>
+                        <td>291</td>
+                        </tr>
+
+                        <tr>
+                        <th>Pavement Defective</th>
+                        <th>Fatigued/Drowsy</th>
+                        <th>Animals Action</th>
+                        <th>Accelerator Defective</th>
+                        <th>Drugs (illegal)</th>
+                        <th>Cell Phone (hand-Held)</th>
+                        <th>Lane Marking Improper/Inadequate</th>
+                        <th>Traffic Control Device Improper/Non-Working</th>
+                        </tr>
+                        <tr>
+                        <td>288</td>
+                        <td>285</td>
+                        <td>222</td>
+                        <td>199</td>
+                        <td>184</td>
+                        <td>123</td>
+                        <td>118</td>
+                        <td>117</td>
+                        </tr>
+
+                        <tr>
+                        <th>Physical Disability</th>
+                        <th>Tinted Windows</th>
+                        <th>Tow Hitch Defective</th>
+                        <th>Prescription Medication</th>
+                        <th>Vehicle Vandalism</th>
+                        <th>Eating or Drinking</th>
+                        <th>Headlights Defective</th>
+                        <th>Other Lighting Defects</th>
+                        </tr>
+                        <tr>
+                        <td>104</td>
+                        <td>64</td>
+                        <td>40</td>
+                        <td>38</td>
+                        <td>37</td>
+                        <td>35</td>
+                        <td>29</td>
+                        <td>29</td>
+                        </tr>
+
+                        <tr>
+                        <th>Using On Board Navigation Device</th>
+                        <th>Other Electronic Device</th>
+                        <th>Cell Phone (hands-free)</th>
+                        <th>Shoulders Defective/Improper</th>
+                        <th>Windshield Inadequate</th>
+                        <th>Texting</th>
+                        <th>Listening/Using Headphones</th>
+                        </tr>
+                        <tr>
+                        <td>23</td>
+                        <td>22</td>
+                        <td>20</td>
+                        <td>15</td>
+                        <td>13</td>
+                        <td>10</td>
+                        <td>4</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+        
+    </div>
+
+    <div>
+        <h2 class = "down-header">Visualizations</h2>
+        <h3>Top Factors for Collisions by Borough</h3>
+        <p>To further explore the dataset, the top five contributing factors were aggregated, compared to total crashes, and looked at for each borough. 
+            From the plot we see that across the boroughs the factor for a lot of collisions is unreported and the second most is driving distracted.
+            We also see that Brooklyn and Queens tend to have more total crashes whereas the other boroughs have a lot less. 
+        </p>
+        <div class="img-cont"><img src="plots/factors.png">
+        </div>
+
+        <h3>Percentage of Injuries by Person Type</h3>
+        <p>To understand the distribution of those that are injured in collisions, the data was aggregated by each type of person (person, cyclist etc.).
+            From the plot we see that the most injured is "Persons" with over 50% of total injuries, followed by motorists with 35% of injuries.
+            Persons is a broad term for people injured again showcasing the lack of specifity and information when reported. 
+        </p>
+        <div class="img-cont"><img src="plots/persontype.png">
+        </div>
+
+        <h3>Collision Severity by Times of Day</h3>
+        <p>To find the most common time of day for crashes, the data was aggregated to find the total deaths and injuries and the total number of people hurt in each time frame of the day.
+            From the plot we see that the afternoon and evening have the most collisions compared to morning and night. 
+            As for severity, for all of the times of day most of these collisions result in injuries and very few result in death. 
+        </p>
+        <button onclick="secretImg()">Click Me!</button>
+        <div class="img-cont"><img id="plot3" src="plots/severity.png">
+        </div>
+
+    </div>
+
+    <div>
+        <h2 class = "down-header"> Testable Hypotheses</h2>
+        <p>Finally, after analyzing the variables and visualizations here are 3 testable hypotheses:</p>
+        <ol>
+            <li class="hyp">The most frequent cause of collisions is driver inattention/distraction (after unspecified) compared to the other factors.  
+                <p>The contributing factor variable showed that after "Unspecified" driver inattention had the highest count with 68,327. As well as, the top factors across the boroughs plot showed that driver inattention is the highest across the boroughs as well. </p>
+            </li>
+            <li class="hyp">From all of the boroughs Brooklyn and Queens have higher numbers of collisions. 
+                <p>The borough distribution showed that Brooklyn with 71,622 total collisions and Queens with 54,637 collisions have the highest. The top factor plot also showed that even across all the factors Brooklyn and Queens tended to lead in collisions.</p> 		
+            </li>
+            <li class="hyp">The number of vehicle collisions is higher in the afternoon compared to other parts of the day. 
+                <p>The time-of-day variable, the summary shows that the afternoon had the highest number of collisions with 94,218. In the collision severity plot we can see that this is reiterated with the afternoon having the highest sum.</p>
+            </li>
+        </ol>
+    </div>
+
+
+
+</body>
+</html>

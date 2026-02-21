@@ -1,0 +1,180 @@
+---
+title: "collisions"
+format: html
+---
+
+
+```{r}
+library(tidyverse)
+```
+
+
+Load data set + cleaning 
+```{r}
+collisions <- read.csv("Motor_Vehicle_Collisions_-_Crashes_20260210.csv")
+
+collisions <- collisions |>
+  mutate(CRASH.TIME = hm(CRASH.TIME)) |>
+  mutate(time_of_day = case_when(
+          hour(CRASH.TIME) >= 0 & hour(CRASH.TIME) < 6 ~ "Night",
+          hour(CRASH.TIME) >= 6 & hour(CRASH.TIME) < 12 ~ "Morning", 
+          hour(CRASH.TIME) >= 12 & hour(CRASH.TIME) < 18 ~ "Afternoon",
+          hour(CRASH.TIME) >= 18 ~ "Evening"), 
+          time_of_day = factor(time_of_day, 
+                      levels = c("Night", "Morning", "Afternoon", "Evening"), 
+                      ordered = TRUE)) |>
+  mutate(BOROUGH = case_when(
+    BOROUGH == "" ~ NA_character_, 
+    TRUE ~ BOROUGH)) |>
+  mutate(
+    CRASH.DATE = mdy(CRASH.DATE),
+    month = month(CRASH.DATE, label = TRUE, abbr = FALSE)
+  )
+  
+```
+
+Summary Statistics:
+
+Quantitative
+1. Number of persons killed
+```{r}
+
+summary(collisions$NUMBER.OF.PERSONS.KILLED)
+
+```
+
+
+2. Number of persons injured 
+```{r}
+
+summary(collisions$NUMBER.OF.PERSONS.INJURED)
+
+```
+
+
+Ordinal 
+1. Month (bin)
+```{r}
+
+table(collisions$month)
+
+```
+
+2. Time of day (bin)
+```{r}
+
+table(collisions$time_of_day)
+
+```
+
+
+Categorical:
+1. Borough 
+```{r}
+
+table(collisions$BOROUGH, useNA = "ifany")
+
+```
+
+2. Contributing factor 
+```{r}
+
+collisions |>
+  pull(CONTRIBUTING.FACTOR.VEHICLE.1) |>
+  table() |>
+  sort(decreasing = TRUE)
+
+```
+
+
+Visualizations:
+
+```{r}
+injury_total <- collisions |>
+  summarize(
+    Persons = sum(NUMBER.OF.PERSONS.INJURED, na.rm = TRUE),
+    Pedestrians = sum(NUMBER.OF.PEDESTRIANS.INJURED, na.rm = TRUE),
+    Cyclists = sum(NUMBER.OF.CYCLIST.INJURED, na.rm = TRUE),
+    Motorists = sum(NUMBER.OF.MOTORIST.INJURED, na.rm = TRUE)) |>
+  pivot_longer(cols = everything(), 
+               names_to = "person_type", 
+               values_to = "total_injuries") |>
+  mutate(Percent = total_injuries / sum(total_injuries) * 100)
+
+ggplot(injury_total, aes(x = Percent, y = person_type)) +
+  geom_col() + 
+  theme_minimal() + 
+  labs(
+    title = "Percent Injuries by Type of Person",
+    x = "Percent of Total Injuries",
+    y = "Person Type")
+  
+
+```
+
+```{r}
+#get the top 5 reasons and compare that to the borough
+
+top_5_reason <- collisions |>
+  filter(!is.na(CONTRIBUTING.FACTOR.VEHICLE.1),
+         CONTRIBUTING.FACTOR.VEHICLE.1 != "") |>
+  count(CONTRIBUTING.FACTOR.VEHICLE.1, sort = TRUE) |>
+  slice_head(n = 5)
+
+plot_2_df <- collisions |>
+  filter(CONTRIBUTING.FACTOR.VEHICLE.1 %in% top_5_reason$CONTRIBUTING.FACTOR.VEHICLE.1,
+         !is.na(BOROUGH),
+         BOROUGH != "") |>
+  group_by(BOROUGH, CONTRIBUTING.FACTOR.VEHICLE.1) |>
+  summarise(
+    total_crashes = n(),
+    total_deaths = sum(NUMBER.OF.PERSONS.KILLED, na.rm = TRUE),
+    .groups = "drop"
+  ) 
+
+plot_2_df |>
+  ggplot(aes(x=CONTRIBUTING.FACTOR.VEHICLE.1, y = total_crashes, fill = BOROUGH)) + 
+  geom_col(position = "dodge") + 
+  coord_flip() + 
+  labs(
+    title = "Top 5 Contributing Factors for Collisions by Borough", 
+    x = "Contributing Factors", 
+    y = "Total Crashes", 
+    fill = "Borough")
+
+```
+
+```{r}
+
+time_summary <- collisions |>
+  filter(!is.na(time_of_day)) |>
+  group_by(time_of_day) |>
+  summarise(
+    total_crashes = n(),
+    total_injuries = sum(NUMBER.OF.PERSONS.INJURED, na.rm = TRUE),
+    total_deaths = sum(NUMBER.OF.PERSONS.KILLED, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols = c(total_injuries, total_deaths),
+    names_to = "severity",
+    values_to = "count"
+  ) |> 
+  mutate(severity = case_when(
+    severity == "total_injuries" ~ "Total Injuries", 
+    TRUE ~ "Total Deaths"))
+
+ggplot(time_summary,
+       aes(x = time_of_day, y = count, fill = severity)) +
+  geom_col(position = "stack") +
+  labs(
+    title = "Collision Severity by Time of Day",
+    x = "Time of Day",
+    y = "Number of People Harmed",
+    fill = "Severity Type"
+  ) +
+  theme_minimal()
+
+
+```
+
