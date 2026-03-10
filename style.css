@@ -28,7 +28,7 @@ body {
 
 #variable-analysis {
     margin-left: 35px;
-    margin-right: 35 px; 
+    margin-right: 35px; 
 }
 
 h2{
@@ -44,7 +44,7 @@ tbody {
 }
 
 .big-table {
-    font-size: 80%;
+    font-size: 77%;
 }
 
 li {
@@ -53,7 +53,7 @@ li {
 
 img {
     align-items: center;
-    max-width: 50%; 
+    max-width: 62%; 
     height: auto; 
 }
 
@@ -63,10 +63,12 @@ img {
 
 th {
     padding: 5px; 
+    word-wrap: break-word;
 } 
 
 td {
     padding: 5px; 
+    word-wrap: break-word;
 }
 
 .down-header {
@@ -78,7 +80,8 @@ table {
     padding-top: 20px; 
     text-align: center;
     margin-left: auto;
-    margin-right: auto;
+    margin-right: auto; 
+    padding-bottom: 20px;
 }
 
 h3 {
@@ -101,3 +104,6 @@ button {
     font-family:monospace;
 }
 
+.table-cont{
+    overflow-x: auto;
+}
