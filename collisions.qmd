@@ -86,6 +86,89 @@ collisions |>
 
 ```
 
+Distribution/Frequency Visulizations: 
+
+num persons killed
+```{r}
+collisions |> 
+  ggplot(aes(x=NUMBER.OF.PERSONS.KILLED)) +
+  geom_histogram() + 
+  scale_y_continuous(labels = scales::comma) + 
+  labs(
+    title = "Frequency of Deaths from Collisions", 
+    y = "Count", 
+    x = "Number of Persons Killed") +
+  theme_minimal()
+```
+
+num persons injured
+```{r}
+collisions |> 
+  ggplot(aes(x=NUMBER.OF.PERSONS.INJURED)) +
+  geom_histogram() + 
+  labs(
+    title = "Frequency of Injuries from Collisions", 
+    y = "Count", 
+    x = "Number of Persons Injured") +
+  theme_minimal()
+```
+
+month 
+```{r}
+collisions |> 
+  ggplot(aes(x=month)) +
+  geom_bar() + 
+  labs(
+    title = "Distribution of Collisions by Month", 
+    y = "Number of Collisions", 
+    x = "Month") +
+  coord_flip() +
+  theme_minimal()
+```
+
+time of day 
+```{r}
+collisions |> 
+  ggplot(aes(x=time_of_day)) +
+  geom_bar() + 
+  labs(
+    title = "Distribution of Collisions by Time of Day", 
+    y = "Number of Collisions", 
+    x = "Time of Day") +
+  theme_minimal()
+```
+
+borough 
+```{r}
+collisions |> 
+  ggplot(aes(x=BOROUGH)) +
+  geom_bar() + 
+  labs(
+    title = "Distribution of Collisions by Borough", 
+    y = "Number of Collisions", 
+    x = "Borough") +
+  theme_minimal()
+```
+
+contributing factor 
+```{r}
+top_factors <- collisions |> 
+  select(CONTRIBUTING.FACTOR.VEHICLE.1) |>
+  count(CONTRIBUTING.FACTOR.VEHICLE.1, sort = TRUE) |>
+  slice_head(n = 13)
+  
+top_factors |> 
+  ggplot(aes(x = reorder(CONTRIBUTING.FACTOR.VEHICLE.1, n), y = n)) +
+  geom_col() + 
+  labs(
+    title = "Distribution of Top 13 Factors for Collisions", 
+    y = "Number of Collisions", 
+    x = "Contributing Factor") +
+  coord_flip() +
+  theme_minimal()
+```
+
+
 
 Visualizations:
 
